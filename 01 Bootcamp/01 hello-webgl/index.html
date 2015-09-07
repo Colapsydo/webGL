@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <title>Hello WebGL</title>
+    
+    
+    
+    
+        <link rel="stylesheet" href="css/style.css">
+
+    
+    
+    
+  </head>
+
+  <body>
+
+    <script id="vertex-shader" type="x-shader/x-vertex">
+		attribute vec3 vertexPosition;
+		
+		uniform mat4 modelViewMatrix;
+		uniform mat4 perspectiveMatrix;
+
+		void main(void) {
+			gl_Position = perspectiveMatrix * modelViewMatrix * vec4(vertexPosition, 1.0);
+		}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+		precision mediump float;
+	
+		void main() { 
+			gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0 ); 
+		}
+</script>
+
+<div id="container">
+		<canvas id="gl-canvas" width="580" height="580">
+				Oops ... your browser doesn't support the HTML5 canvas element
+		</canvas>
+</div>
+    	<script src='../../lib/webgl-utils.js'></script>
+		<script src='../../lib/initshaders.js'></script>
+		<script src='../../lib/mv.js'></script>
+		<script src="js/index.js"></script>
+
+    
+    
+    
+  </body>
+</html>

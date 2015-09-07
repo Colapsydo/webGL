@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <title>Point Light - Per Fragment</title>
+    
+    
+    
+    
+        <link rel="stylesheet" href="css/style.css">
+
+    
+    
+    
+  </head>
+
+  <body>
+
+    <script id="vertex-shader" type="x-shader/x-vertex">
+		precision mediump float;
+		attribute vec4 aPosition; 
+		attribute vec3 aNormal; 
+		
+		uniform mat4 uModelMatrix; 
+		uniform mat4 uViewMatrix; 
+		uniform mat3 uNormalMatrix; 
+		uniform mat4 uProjectionMatrix; 
+		
+		//passing normal and vertex position to fragment shader to calculate point lighting
+		varying vec3 vNormal;
+		varying vec3 vVertexPos;
+	
+		void main() { 
+			vec4 vertPos4 = uViewMatrix*uModelMatrix*aPosition;
+			
+			//vertex position
+			gl_Position = uProjectionMatrix*uViewMatrix*uModelMatrix*aPosition;
+			
+			//passing Varying
+			vNormal = uNormalMatrix*aNormal;
+				//Since point has been transformed
+				//we need to go back from homogenous coordinates to 3D coordinates. 
+			vVertexPos = vec3(vertPos4.xyz/vertPos4.w); 
+	}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+		precision mediump float;
+	
+		uniform mat4 uViewMatrix; 
+		uniform vec4 uLightDir;
+		uniform vec4 uAmbient;
+		uniform vec4 uDiffuse;
+		uniform vec4 uSpecular;
+		uniform float uShininess;
+		
+		varying vec3 vNormal;
+		varying vec3 vVertexPos;
+		
+		void main() {
+			/*  In order to calculate the cos of the angle made by two vectors
+					we can use the dot product of these vectors at the condition
+					that both vectors are normalized */
+			
+			vec3 normal = normalize(vNormal);
+			vec3 eyeDir = normalize(-vVertexPos);
+			vec4 lightPos = uViewMatrix*uLightDir;
+				//Since the matrix is applied to the light position
+				//we need to go back to 3D from homogenous 4D coordinates
+				// - normalization is done later since vector length is needed for the attenuation coeff
+			vec3 light = (lightPos.xyz/lightPos.w)-vVertexPos; 
+			
+			//distance attenuation coefficient
+			float distance = length(light);
+					//radial attenuation with coeff 1, 2/r, 1/r²
+			float att = 1.0/(1.0+0.2*distance + 0.001*distance*distance);
+				
+			light = normalize(light);
+			
+			//ambient
+			vec3 ambient = uAmbient.rgb;
+			
+			//diffuse								
+			float diffCoeff = max(dot(light,normal),0.0);
+			vec3 diffuse = att*diffCoeff*uDiffuse.rgb;
+	
+			//specular
+			vec3 specular;
+			if(diffCoeff>0.0){
+				vec3 halfway = normalize(eyeDir + light);
+				float specCoeff = pow(max(dot(halfway, normal),0.0),uShininess);				
+				specular = att*specCoeff*uSpecular.rgb;
+			}else{
+				specular = vec3(0.0,0.0,0.0);
+			}
+			
+			gl_FragColor = vec4(ambient+diffuse+specular, 1.0 ); 
+		}
+</script>
+
+<div id="container">
+		<canvas id="gl-canvas" width="580" height="580">
+				Oops ... your browser doesn't support the HTML5 canvas element
+		</canvas>
+</div>
+    	<script src='../../lib/webgl-utils.js'></script>
+		<script src='../../lib/initshaders.js'></script>
+		<script src='../../lib/mv.js'></script>
+        <script src="js/index.js"></script>          
+  </body>
+</html>

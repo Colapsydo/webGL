@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <title>Simple CAD</title>
+    
+    
+    
+    
+        <link rel="stylesheet" href="css/style.css">
+
+    
+    
+    
+  </head>
+
+  <body>
+
+    <script id="vertex-shader" type="x-shader/x-vertex">
+		attribute vec4 aPosition; 
+		attribute vec3 aColor; 
+		
+		uniform mat4 uModelMatrix; 
+		uniform mat4 uViewMatrix; 
+		uniform mat4 uProjectionMatrix; 
+		
+		varying vec3 vColor; 
+	
+		void main() { 
+			vec4 tVertex = uProjectionMatrix*uViewMatrix*uModelMatrix*aPosition;
+			gl_Position = tVertex; 
+			
+			vColor = aColor; 
+	}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+		precision mediump float; 
+		varying vec3 vColor; 
+		
+		void main() { 
+			gl_FragColor = vec4(vColor, 1.0 ); 
+		}
+</script>
+
+<div id="main">
+	<div id="canvas">
+		<canvas id="gl-canvas">
+				Oops ... your browser doesn't support the HTML5 canvas element
+		</canvas>
+	</div>
+	
+	<div class="container" id="settings">
+		<button id="cube" value="0">Cube</button><button id="sphere" value="1">Sphere</button><button id="cylinder" value="2">Cylinder</button><button id="cone" value="3">Cone</button>
+		<p>Scale</p>
+		<p>X: 1 <input id="scaleX" type="range" min="1" max="20" step="1" value="10"> 20</p>
+		<p>Y: 1 <input id="scaleY" type="range" min="1" max="20" step="1" value="10"> 20</p>
+		<p>Z: 1 <input id="scaleZ" type="range" min="1" max="20" step="1" value="10"> 20</p>
+		
+		<p>Rotation</p>
+		<p>X: 0 <input id="rotationX" type="range" min="0" max="360" step="1" value="0"> 360</p>
+		<p>Y: 0 <input id="rotationY" type="range" min="0" max="360" step="1" value="0"> 360</p>
+		<p>Z: 0 <input id="rotationZ" type="range" min="0" max="360" step="1" value="0"> 360</p>
+		
+		<p>Translation</p>
+		<p>X: -50 <input id="translationX" type="range" min="-50" max="50" step="1" value="0"> 50</p>
+		<p>Y: -50 <input id="translationY" type="range" min="-50" max="50" step="1" value="0"> 50</p>
+		<p>Z: -50 <input id="translationZ" type="range" min="-50" max="50" step="1" value="0"> 50</p>
+		<br>
+		<br>
+		<p>
+				Color: 
+				<input type="color" id="color" value="#990099">
+		</p>
+		<br>
+		<p>	<input type="checkbox" id="randomColor"> Random Colors<br>
+				<input type="checkbox" id="solid" checked> Solid<br>
+  			<input type="checkbox" id="mesh" checked> Mesh<br>				
+		</p>
+		<br>
+		<p>
+			Selection<br>
+			<select id="objectList">
+			</select>
+			<button id="delete">Delete Selection</button>
+		</p>
+		<br>
+		<p>
+			Camera:
+			<br>
+			<input type="radio" id="cameraRotation" name="cameraSettings" value="rotation" checked>Rotation 
+			<input type="radio" id="cameraZoom" name="cameraSettings" value="zoom">Zoom
+			<br>
+			<button id="axis">Toogle Axis</button>
+			</p>
+	</div>
+</div>
+    <script src='../../lib/webgl-utils.js'></script>
+	<script src='../../lib/initshaders.js'></script>
+	<script src='../../lib/mv.js'></script>
+	<script src="js/index.js"></script>
+
+    
+    
+    
+  </body>
+</html>

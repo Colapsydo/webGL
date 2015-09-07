@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <title>Transformation Matrices</title>
+    
+    
+    
+    
+        <link rel="stylesheet" href="css/style.css">
+
+    
+    
+    
+  </head>
+
+  <body>
+
+    <script id="vertex-shader" type="x-shader/x-vertex">
+		attribute vec4 aPosition; 
+		attribute vec3 aColor; 
+		
+		uniform mat4 uModelMatrix; 
+		uniform mat4 uViewMatrix; 
+		uniform mat4 uProjectionMatrix; 
+		
+		varying vec3 vColor; 
+	
+		void main() { 
+			vec4 tVertex = uProjectionMatrix*uViewMatrix*uModelMatrix*aPosition;
+			gl_Position = tVertex; 
+			
+			vColor = aColor; 
+	}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+		precision mediump float; 
+		varying vec3 vColor; 
+		
+		void main() { 
+			gl_FragColor = vec4(vColor, 1.0 ); 
+		}
+</script>
+
+<div id="container">
+		<canvas id="gl-canvas" width="580" height="580">
+				Oops ... your browser doesn't support the HTML5 canvas element
+		</canvas>
+</div>
+    	<script src='../../lib/webgl-utils.js'></script>
+		<script src='../../lib/initshaders.js'></script>
+		<script src='../../lib/mv.js'></script>
+        <script src="js/index.js"></script>
+
+    
+    
+    
+  </body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <title>Drawing</title>
+    
+    
+    
+    
+        <link rel="stylesheet" href="css/style.css">
+
+    
+    
+    
+  </head>
+
+  <body>
+
+    <script id="vertex-shader" type="x-shader/x-vertex">
+		attribute vec3 vPosition;
+		attribute vec3 vColor;
+		uniform float angleY;
+		varying vec3 fColor;
+	
+		void main() { 
+			float c = cos(angleY);
+			float s = sin(angleY);
+			mat3 rotation = mat3(c,0,-s,0,1,0,s,0,c);
+			gl_Position = vec4(rotation*vPosition,1.0);
+			fColor = vColor;
+		}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+		precision mediump float;
+		varying vec3 fColor;
+	
+		void main() { 
+			gl_FragColor = vec4(fColor, 1.0 ); 
+		}
+</script>
+<div id="main">
+	<div id="canvas">
+			<canvas id="gl-canvas">
+					Oops ... your browser doesn't support the HTML5 canvas element
+			</canvas>
+	</div>
+	<div class="container" id="palette">
+		<canvas id="pal-canvas" width="200" height="200"></canvas>
+		<br>
+		<p>Width: 1 <input id="strokeWidth" type="range" min="1" max="20" step="1" value="1"> 20</p>
+		<button id="undo">Undo</button>
+		<p></p>
+		<button id="rotation">Toogle Rotation</button>
+	</div>
+</div>
+    <script src='../../lib/webgl-utils.js'></script>
+	<script src='../../lib/initshaders.js'></script>
+	<script src='../../lib/mv.js'></script>
+
+        <script src="js/index.js"></script>
+
+    
+    
+    
+  </body>
+</html>

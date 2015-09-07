@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <title>Drawing Extruded</title>
+    
+    
+    
+    
+        <link rel="stylesheet" href="css/style.css">
+
+    
+    
+    
+  </head>
+
+  <body>
+
+    <script id="vertex-shader" type="x-shader/x-vertex">
+		attribute vec3 aPosition;
+		attribute vec3 aColor;
+		attribute vec3 aNormal;
+	
+		uniform mat3 uVertexMatrix;
+		uniform vec3 uLight;
+		
+		varying vec3 vColor;
+	
+		void main() { 
+			vec3 tVertex = uVertexMatrix*aPosition;
+	
+    	vec3 lightDir = normalize( uLight + tVertex );
+			vec3 normal = normalize( uVertexMatrix * aNormal);
+			vec3 eyeDir = normalize(-tVertex);
+			vec3 reflection = normalize(lightDir + eyeDir);
+	
+			float difuse = max( dot(lightDir, normal), 0.0 );
+			float specular = max(dot(normal,reflection), 0.0)*.5;
+			float distance = (3.4641-length(vec3(-1.0-tVertex.x,1.0-tVertex.y,-1.0-tVertex.z)))/7.0;
+			
+			gl_Position = vec4(tVertex,1.0);
+			vColor = (difuse+specular+distance)*aColor;
+		}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+		precision mediump float;
+		varying vec3 vColor;
+	
+		void main() { 
+			gl_FragColor = vec4(vColor, 1.0 ); 
+		}
+</script>
+
+<div id="main">
+	<div id="canvas">
+			<canvas id="gl-canvas">
+					Oops ... your browser doesn't support the HTML5 canvas element
+			</canvas>
+	</div>
+	<div class="container" id="palette">
+		<canvas id="pal-canvas" width="200" height="200"></canvas>
+		<br>
+		<p>Width: 1 <input id="strokeWidth" type="range" min="1" max="20" step="1" value="1"> 20</p>
+		<button id="undo">Undo</button>
+		<p></p>
+		<button id="rotation">Toogle Rotation</button>
+	</div>
+</div>
+    <script src='../../lib/webgl-utils.js'></script>
+	<script src='../../lib/initshaders.js'></script>
+	<script src='../../lib/mv.js'></script>
+
+        <script src="js/index.js"></script>
+
+    
+    
+    
+  </body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <title>Triangle</title>
+    
+    
+    
+    
+        <link rel="stylesheet" href="css/style.css">
+
+    
+    
+    
+  </head>
+
+  <body>
+
+    <script id="vertex-shader" type="x-shader/x-vertex">
+		attribute vec2 vPosition; 
+	
+		void main() { 
+			gl_Position = vec4(vPosition, 0.0, 1.0); 
+		}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+		precision mediump float;
+		uniform vec2 u_resolution;
+		
+		void main() { 
+			vec3 color = vec3(gl_FragCoord.xy/u_resolution.xy,0.0);
+			color.b = 1.0 - (color.r+color.g);
+			float maxVal = max(max(color.r,color.g),color.b);
+			color *=(1.0/maxVal);
+			float lum = 0.299*color.r + 0.587*color.g + 0.114*color.b;
+			gl_FragColor = vec4(lum,lum,lum, 1.0 ); 
+			//gl_FragColor = vec4(color.r, color.g, color.b, 1.0);
+		}
+</script>
+
+<div id="container">
+		<canvas id="gl-canvas" width="600" height="600">
+				Oops ... your browser doesn't support the HTML5 canvas element
+		</canvas>
+</div>
+    <script src='../../lib/webgl-utils.js'></script>
+	<script src='../../lib/initshaders.js'></script>
+	<script src='../../lib/mv.js'></script>
+
+        <script src="js/index.js"></script>
+
+    
+    
+    
+  </body>
+</html>
